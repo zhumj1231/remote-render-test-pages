@@ -1,0 +1,38 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RAF 对照 v1 · 本机测量</title>
+<style>body{font:16px system-ui;max-width:850px;margin:24px auto;padding:0 16px;background:#edf3f0;color:#17382e}button,select,input{font:inherit;padding:6px;margin:4px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:16px}canvas{width:320px;height:180px;border:1px solid #789}label{display:inline-block}</style>
+<h1>RAF 对照 v1</h1><p>不联网、不上传、不保存设备信息。测试期间保持标签页前台且有焦点，不连续截图。仅 RAF 模式不创建 WebGL 上下文。每轮开始时重建画布；从 WebGL 切回仅 RAF 前请刷新本页，以免旧上下文影响基线。</p>
+<label>模式 <select id="mode"><option value="raf">仅 RAF：无绘制</option><option value="clear">WebGL2：仅 320×180 清屏</option></select></label>
+<label>时长（秒）<input id="seconds" type="number" min="2" max="60" value="15"></label><button id="start">开始采样</button><button id="stop" disabled>停止</button><p id="status" role="status">待开始</p><div id="surface"></div><pre id="result" aria-label="测量结果">尚无结果</pre>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);let stop=null;
+$('stop').onclick=()=>stop?.('manual');
+$('start').onclick=()=>{
+ const mode=$('mode').value,seconds=Math.min(60,Math.max(2,Number($('seconds').value)||15));
+ const canvas=document.createElement('canvas');canvas.width=320;canvas.height=180;$('surface').replaceChildren(canvas);
+ let gl=null,renderer='未创建 WebGL 上下文';
+ if(mode==='clear'){
+  gl=canvas.getContext('webgl2',{antialias:false});
+  if(!gl){$('status').textContent='WebGL2 不可用，未启动此轮';return;}
+  const ext=gl.getExtension('WEBGL_debug_renderer_info');renderer=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'详细扩展不可用；'+gl.getParameter(gl.RENDERER);
+  gl.clearColor(.1,.4,.3,1);
+ }
+ $('start').disabled=true;$('stop').disabled=false;$('mode').disabled=true;$('seconds').disabled=true;$('status').textContent='采样中，请保持前台；结束时一次性显示结果';
+ const began=performance.now(),rafTimes=[],arrivalTimes=[],timerTimes=[],events=[];
+ let rafId,timerId,endId,done=false;
+ const state=()=>({elapsedMs:Math.round(performance.now()-began),visibility:document.visibilityState,focus:document.hasFocus()});
+ const changed=()=>events.push(state());changed();
+ document.addEventListener('visibilitychange',changed);window.addEventListener('focus',changed);window.addEventListener('blur',changed);
+ function raf(t){if(done)return;rafTimes.push(t);arrivalTimes.push(performance.now());if(gl)gl.clear(gl.COLOR_BUFFER_BIT);rafId=requestAnimationFrame(raf);}
+ function timer(){if(done)return;timerTimes.push(performance.now());timerId=setTimeout(timer,100);}
+ function summary(times){const a=times.slice(1).map((x,i)=>x-times[i]),s=[...a].sort((a,b)=>a-b),round=x=>Math.round(x*100)/100;return {callbacks:times.length,intervalSamples:a.length,meanMs:a.length?round(a.reduce((a,b)=>a+b,0)/a.length):null,p95Ms:a.length?round(s[Math.floor((s.length-1)*.95)]):null,minMs:a.length?round(s[0]):null,maxMs:a.length?round(s.at(-1)):null};}
+ stop=reason=>{
+  if(done)return;done=true;cancelAnimationFrame(rafId);clearTimeout(timerId);clearTimeout(endId);
+  changed();document.removeEventListener('visibilitychange',changed);window.removeEventListener('focus',changed);window.removeEventListener('blur',changed);
+  const elapsedMs=performance.now()-began;
+  $('result').textContent=JSON.stringify({revision:'raf-control-v1',mode,requestedSeconds:seconds,elapsedMs:Math.round(elapsedMs),reason,renderer,contextLost:gl?gl.isContextLost():null,raf:summary(rafTimes),rafArrival:summary(arrivalTimes),timer100ms:summary(timerTimes),rafCallbacksPerSecond:Number((rafTimes.length*1000/elapsedMs).toFixed(2)),visibilityAndFocus:events,note:'不代表真实呈现帧率或 GPU 耗时；100ms 定时器是另一路调度对照，可能受同样限制。'},null,2);
+  $('status').textContent='已完成';$('start').disabled=false;$('stop').disabled=true;$('mode').disabled=false;$('seconds').disabled=false;stop=null;
+ };
+ rafId=requestAnimationFrame(raf);timerId=setTimeout(timer,100);endId=setTimeout(()=>stop?.('duration'),seconds*1000);
+};
+</script></html>
