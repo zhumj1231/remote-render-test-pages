@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室</title>  <script type="module" crossorigin src="./assets/index-CcCMGbs3.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DjM1q_Gq.css">
+</head>
+<body>
+<canvas id="view" aria-label="可交互的瓦片式三维地图"></canvas>
+<header class="topbar"><div class="brand"><span class="brand-icon">▧</span><div><strong>街境 <i>/</i> 光照实验室</strong><small>TILED WORLD · LIGHTING STUDY 01</small></div></div><div class="top-actions"><span class="live"><b></b> 本地实验</span><button id="perf-toggle" aria-expanded="true">CPU / GPU</button><button id="rt-toggle" aria-expanded="false">RT 缓冲</button><button id="panel-toggle" aria-label="显示或隐藏实验面板">实验设置 <span>⌘</span></button></div></header>
+<aside id="perf-panel" aria-label="CPU GPU 耗时监测">
+<div class="panel-title"><span>CPU / GPU 耗时</span><span class="tag">滚动 120 样本</span></div>
+<p id="gpu-status" class="intro">正在检测 GPU timer query</p>
+<table class="perf-table"><thead><tr><th>阶段</th><th>平均 ms</th><th>P95 ms</th></tr></thead><tbody id="perf-rows"></tbody></table>
+<canvas id="perf-chart" width="600" height="100" aria-label="CPU 与 GPU 耗时历史图"></canvas>
+<p class="intro">蓝：CPU 帧回调　绿：GPU 主画面　橙：GPU 探针　紫：GPU AO　青：天气遮挡<br>CPU/GPU 并行，不能相加。<span id="frame-reference">30 FPS · 33.33 ms / 帧</span></p>
+<div class="control-row"><label for="target-fps">目标帧率</label><select id="target-fps"><option value="30" selected>30 FPS · Android 目标</option><option value="60">60 FPS · 对照</option></select></div>
+<div class="control-row"><label for="gpu-budget">探针 GPU 目标</label><select id="gpu-budget"><option value="0.5">0.5 ms / 帧</option><option value="1" selected>1 ms / 帧</option><option value="2">2 ms / 帧</option><option value="4">4 ms / 帧</option></select></div>
+<div class="control-row"><label for="face-budget">捕获面数上限</label><select id="face-budget"><option value="1">1 面 / 帧</option><option value="2">2 面 / 帧</option><option value="6" selected>6 面 / 帧</option><option value="18">18 面 / 帧</option></select></div>
+<p id="perf-counts" class="intro"></p>
+<p class="perf-note">GPU 目标按异步实测反馈限速，不是硬性时间保证。“加速捕获”使用 4 倍限额。GPU 包含各阶段首次触发的阴影绘制。<br>这些是耗时与资源计数，不是整机占用率、FLOPS 或瓦特功耗；不代表手机或 Switch 的性能。</p>
+</aside>
+<aside id="panel">
+<div class="panel-title"><span>光照与阴影</span><span class="tag">BOTW 思路</span></div>
+<p class="intro">真实捕获环境颜色，观察光如何连接街区。</p>
+<div class="section-label">☁ <span>统一环境 · 天气</span></div>
+<div class="control-row"><label for="weather-mode">天气预设</label><select id="weather-mode"><option value="clear">晴天</option><option value="cloudy">多云</option><option value="rain">下雨</option><option value="snow">下雪</option></select></div>
+<label class="slider-label">降水强度 <output id="weather-intensity-value">100%</output></label><input id="weather-intensity" type="range" min="0" max="1" step="0.05" value="1">
+<div class="control-row"><label for="weather-duration">过渡时间</label><select id="weather-duration"><option value="0">立即 · 调试</option><option value="3">3 秒</option><option value="6" selected>6 秒</option><option value="12">12 秒</option></select></div>
+<div class="control-row"><label for="weather-quality">雨雪密度上限</label><select id="weather-quality"><option value="low">低 · 900 / 种</option><option value="medium" selected>中 · 1800 / 种</option><option value="high">高 · 3600 / 种</option></select></div>
+<div class="control-row"><label for="weather-effects">雨雪粒子与水花</label><input id="weather-effects" type="checkbox" checked></div>
+<div class="control-row"><label for="weather-pause">暂停天气动效</label><input id="weather-pause" type="checkbox"></div>
+<p class="intro" id="weather-status">晴天 · 统一环境状态准备中</p>
+<details class="environment-inspector"><summary>系统联动 · 当前环境参数</summary><p class="intro">天气预设 → 平滑过渡 → 天空 / 日月光 / 雾 / 材质 / 特效。过渡完成后提交一次 GI 源更新；云飘、雨落不触发全场重捕。暂停也会暂停过渡。</p><dl id="environment-values"></dl></details>
+<div class="section-label">00 <span>夜景与灯光</span></div>
+<div class="segmented" id="time-mode"><button data-value="day" class="active">日间</button><button data-value="night">夜景</button></div>
+<div class="control-row"><label for="night-windows">窗户亮灯</label><input id="night-windows" type="checkbox" checked></div>
+<label class="slider-label">亮灯比例 <output id="window-occupancy-value">57%</output></label><input id="window-occupancy" type="range" min="0" max="1" step="0.01" value="0.57">
+<label class="slider-label">窗光亮度 <output id="window-power-value">1.8×</output></label><input id="window-power" type="range" min="0" max="6" step="0.1" value="1.8">
+<div class="control-row"><label for="street-lights">路灯照明</label><input id="street-lights" type="checkbox" checked></div>
+<label class="slider-label">路灯亮度 <output id="street-power-value">100%</output></label><input id="street-power" type="range" min="0" max="2.5" step="0.05" value="1">
+<label class="slider-label">灯头光晕 <output id="lamp-glow-value">65%</output></label><input id="lamp-glow" type="range" min="0" max="1.5" step="0.05" value="0.65">
+<p class="intro" id="night-status">日间模式；点底部“夜景街区”体验窗光与暖色路灯。</p>
+<div class="section-label">01 <span>环境补光</span></div>
+<div class="segmented" id="gi-mode"><button data-value="on" class="active">实时 GI</button><button data-value="gray" title="只将探针间接光转为灰度，保留材质颜色，用于分辨补光亮度与颜色渗透">GI 转灰</button><button data-value="off">关闭</button></div>
+<div class="control-row"><label for="lighting-view">光照分量</label><select id="lighting-view"><option value="0" selected>完整光照</option><option value="1">仅间接漫反射</option><option value="2">仅 AO · 灰度图</option></select></div>
+<div id="view-key" class="panel-note" hidden>检查视图：仅显示间接漫反射，关闭主画面雾。探针源光照不变；未覆盖处仍使用环境底光。可与“GI 转灰”对照。</div>
+<div class="control-row"><label for="tone-mapping">显示映射</label><select id="tone-mapping"><option value="neutral" selected>Neutral · 保留色彩</option><option value="aces">ACES · 原版对照</option></select></div>
+<label class="slider-label">补光混合 <output id="strength-value">85%</output></label><input id="strength" type="range" min="0" max="1" step="0.05" value="0.85">
+<div class="control-row"><label for="update-mode">探针更新</label><select id="update-mode"><option value="sliced">分帧预算</option><option value="full">加速捕获</option><option value="frozen">冻结缓存</option></select></div>
+<div class="control-row"><label for="probe-layout">探针布局</label><select id="probe-layout"><option value="adaptive" selected>按场景自适应</option><option value="full">完整网格 · 对照</option></select></div>
+<p class="intro" id="probe-layout-status">按建筑、高架与接收表面准备探针</p>
+<p class="intro" id="probe-progress">正在准备多层探针场</p>
+<div class="control-row"><label for="visibility">深度遮挡权重</label><input id="visibility" type="checkbox" checked></div>
+<div class="control-row"><label for="moving-light">移动点光源测试</label><input id="moving-light" type="checkbox"></div>
+<div class="control-row"><label for="debug-colors">建筑调试色</label><select id="debug-colors" title="改部分建筑及试验区侧墙的反照率，不增加自发光；冻结探针时需恢复更新才能刷新染色"><option value="0">原配色</option><option value="1" selected>红 / 绿 / 粉</option><option value="2">纯红</option><option value="3">纯绿</option><option value="4">纯粉 / 洋红</option></select></div>
+<p class="intro">点“绿楼楼脚”观察普通楼边地面；切换 GI 转灰或仅间接漫反射作对照。完整光照中太阳会冲淡染色。冻结缓存时改色不会刷新补光。</p>
+<div class="section-label">02 <span>太阳与投影</span></div>
+<label class="slider-label">太阳方位 <output id="sun-value">145°</output></label><input id="sun" type="range" min="0" max="360" step="1" value="145">
+<label class="slider-label">太阳高度 <output id="elevation-value">42°</output></label><input id="elevation" type="range" min="10" max="80" step="1" value="42">
+<div class="control-row"><label for="shadows">太阳阴影</label><input id="shadows" type="checkbox" checked></div>
+<div class="section-label">03 <span>环境光遮挡 AO</span></div>
+<div class="segmented" id="ao-mode"><button data-value="off">关闭</button><button data-value="on" class="active">开启 AO</button><button data-value="view">AO 灰度图</button></div>
+<div class="control-row"><label for="ao-quality">AO 质量</label><select id="ao-quality"><option value="low">低 · 8 / 半分辨率</option><option value="medium" selected>中 · 12 / 半分辨率</option><option value="high">高 · 20 / 全分辨率</option></select></div>
+<label class="slider-label">AO 半径 <output id="ao-radius-value">3.0 m</output></label><input id="ao-radius" type="range" min="0.5" max="8" step="0.5" value="3">
+<label class="slider-label">AO 强度 <output id="ao-strength-value">90%</output></label><input id="ao-strength" type="range" min="0" max="1.5" step="0.05" value="0.9">
+<label class="slider-label">直射影响 · 风格化 <output id="ao-direct-value">0%</output></label><input id="ao-direct" type="range" min="0" max="0.5" step="0.05" value="0">
+<p class="intro" id="ao-status">正在准备深度 AO</p>
+<p class="intro">补充楼脚、桥墩与夹角的接触暗部。默认只影响间接漫反射，保留彩色补光；灰度图中白色无遮挡。屏幕外与被遮住的几何不参与。</p>
+<div class="section-label">04 <span>瓦片与观察</span></div>
+<div class="control-row"><label for="tiles">瓦片边界</label><input id="tiles" type="checkbox"></div>
+<div class="control-row"><label for="probes">探针位置</label><input id="probes" type="checkbox"></div>
+<div class="control-row"><label for="coverage">GI 覆盖权重</label><input id="coverage" type="checkbox"></div>
+<div id="coverage-key" class="panel-note" hidden>绿色：探针补光参与较多<br>灰色：主要使用解析环境光。随距离和遮挡衰减。</div>
+<div class="control-row"><label for="cube">六面捕获预览</label><input id="cube" type="checkbox"></div>
+<div class="panel-note">地图高覆盖实验：近地层随观察高度切换 16 / 32 米，上层 32 米，远场 128 / 512 米；4 个高度层，随视野流式捕获。不是已确认的 BOTW 探针布局。<br>Android 30 FPS 为目标，尚未进行 Android 真机功耗验证；CSM 尚未实现。</div>
+</aside>
+<div id="landmarks" aria-hidden="true"></div>
+<aside id="rt-panel" hidden aria-label="Render Target 调试预览">
+<div class="rt-heading"><strong>Render Targets · 实际缓存</strong><button id="rt-close" aria-label="关闭 RT 调试">×</button></div>
+<div class="rt-controls"><select id="rt-target"><option value="grid">全部 · 点击卡片放大</option></select><select id="rt-channel"><option value="-1">自动显示</option><option value="0">原始 R</option><option value="1">原始 G</option><option value="2">原始 B</option><option value="3">原始 A</option></select><label>增益 <input id="rt-gain" type="range" min="0.1" max="4" step="0.1" value="1"><output id="rt-gain-value">1.0×</output></label><label>深度范围 <input id="rt-range" type="number" value="1000" min="1" max="10000"> m</label></div>
+<p class="rt-note">预览读取现有 GPU 贴图，无同步回读。HDR 单独映射显示；未就绪图集槽可能仍是旧内容，请对照 Meta。主画面直接绘制到屏幕。调试绘制另计 GPU RT 耗时。</p>
+<div id="rt-grid"></div>
+</aside>
+<section class="navigation"><div class="nav-heading"><span class="turn-icon">↗</span><div><small>下一段 · 滨河高架</small><strong id="nav-instruction">沿高架驶向海湾收费站</strong></div><span class="distance">1.2 <small>km</small></span></div><div class="route-progress"><i></i></div><div class="nav-footer"><span><b class="route-dot"></b> 城市环线 · 模拟路线</span><span id="drive-status">自由观察</span></div></section>
+<nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
+<div class="compass" id="compass"><span>N</span><i>▲</i></div>
+<div class="stats"><span id="fps">-- FPS</span><span id="tile-stats">正在准备瓦片</span><span id="probe-stats">探针待更新</span><button id="reset">重置视角 ↺</button></div>
+<div class="gesture-hint">拖动旋转 · 右键平移 · 滚轮缩放 <span>W A S D 移动</span></div>
+<div id="cube-label" hidden>正在更新的探针 · HDR RGB / 六面预览</div>
+<div id="loading"><span class="loader"></span><strong>正在构建城市瓦片</strong><small>程序化 Mesh · 本地生成</small></div>
+<div id="error" hidden></div>
+</body></html>
