@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-CE_hVFiB.js"></script>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-Ct9UCYjT.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-DjM1q_Gq.css">
 </head>
 <body>
@@ -51,7 +51,7 @@
 <p class="intro" id="probe-progress">正在准备多层探针场</p>
 <div class="control-row"><label for="visibility">深度遮挡权重</label><input id="visibility" type="checkbox" checked></div>
 <div class="control-row"><label for="moving-light">移动点光源测试</label><input id="moving-light" type="checkbox"></div>
-<div class="control-row"><label for="debug-colors">建筑调试色</label><select id="debug-colors" title="改部分建筑及试验区侧墙的反照率，不增加自发光；冻结探针时需恢复更新才能刷新染色"><option value="0">原配色</option><option value="1" selected>红 / 绿 / 粉</option><option value="2">纯红</option><option value="3">纯绿</option><option value="4">纯粉 / 洋红</option></select></div>
+<div class="control-row"><label for="debug-colors">建筑调试色</label><select id="debug-colors" title="改部分建筑及试验区侧墙的反照率，不增加自发光；冻结探针时需恢复更新才能刷新染色"><option value="0" selected>建筑原配色</option><option value="1">红 / 绿 / 粉</option><option value="2">纯红</option><option value="3">纯绿</option><option value="4">纯粉 / 洋红</option></select></div>
 <p class="intro">点“绿楼楼脚”观察普通楼边地面；切换 GI 转灰或仅间接漫反射作对照。完整光照中太阳会冲淡染色。冻结缓存时改色不会刷新补光。</p>
 <div class="section-label">02 <span>太阳与投影</span></div>
 <label class="slider-label">太阳方位 <output id="sun-value">145°</output></label><input id="sun" type="range" min="0" max="360" step="1" value="145">
@@ -81,7 +81,7 @@
 <div id="rt-grid"></div>
 </aside>
 <section class="navigation"><div class="nav-heading"><span class="turn-icon">↗</span><div><small>下一段 · 滨河高架</small><strong id="nav-instruction">沿高架驶向海湾收费站</strong></div><span class="distance">1.2 <small>km</small></span></div><div class="route-progress"><i></i></div><div class="nav-footer"><span><b class="route-dot"></b> 城市环线 · 模拟路线</span><span id="drive-status">自由观察</span></div></section>
-<nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
+<nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="architecture">建筑细节</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
 <div class="compass" id="compass"><span>N</span><i>▲</i></div>
 <div class="stats"><span id="fps">-- FPS</span><span id="tile-stats">正在准备瓦片</span><span id="probe-stats">探针待更新</span><button id="reset">重置视角 ↺</button></div>
 <div class="gesture-hint">拖动旋转 · 右键平移 · 滚轮缩放 <span>W A S D 移动</span></div>
