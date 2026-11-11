@@ -1,7 +1,7 @@
 {
-  "version": "window-relief-v2",
-  "source_commit": "1cb4ab6bf3edd5c93fa5ace679b8cc6f909f06b1",
-  "build_asset": "assets/index-DEGto3ho.js",
-  "build_sha256": "b975a5cd65f44e71c4fb644b5a92ec9d9fdc2e51cb010ab965836f9e0e4b448a",
-  "validation": "41 tests and build pass; cloud sampling checks use SwiftShader. Real-GPU dynamic appearance/performance and full GI regression remain unverified."
+  "version": "facade-details-v1",
+  "source_commit": "1c33674397a54c99ecd6d1685cf0eac628192b56",
+  "build_asset": "assets/index-CtkNCDSi.js",
+  "build_sha256": "84faf64563c5ce0395f902763c372908176c1fe2eca45246555f90bb132d99e6",
+  "validation": "41 tests and build pass. Cloud motion, day/night, controls and shader invariants checked using SwiftShader. Real-GPU dynamic appearance/performance and full GI regression remain unverified."
 }
