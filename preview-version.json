@@ -1,7 +1,7 @@
 {
-  "version": "facade-details-v1",
-  "source_commit": "1c33674397a54c99ecd6d1685cf0eac628192b56",
-  "build_asset": "assets/index-CtkNCDSi.js",
-  "build_sha256": "84faf64563c5ce0395f902763c372908176c1fe2eca45246555f90bb132d99e6",
-  "validation": "41 tests and build pass. Cloud motion, day/night, controls and shader invariants checked using SwiftShader. Real-GPU dynamic appearance/performance and full GI regression remain unverified."
+  "version": "interaction-v1",
+  "source_commit": "fd811cd92326f4b1b2941e0e77bf2838879281dc",
+  "build_asset": "assets/index-B8f3Yl_w.js",
+  "build_sha256": "b99ce2b63a00360a249c4bf5c0b0d6810794ee2bd1cab10f23545f29291be569",
+  "validation": "42 tests and build pass. Focused touch, mouse and light-direction browser checks pass using SwiftShader. Physical mobile devices remain unverified; full GI convergence regression timed out at 120 seconds."
 }

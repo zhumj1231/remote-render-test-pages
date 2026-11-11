@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-CtkNCDSi.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DjM1q_Gq.css">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-B8f3Yl_w.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Dz6RM-zb.css">
 </head>
 <body>
 <canvas id="view" aria-label="可交互的瓦片式三维地图"></canvas>
-<header class="topbar"><div class="brand"><span class="brand-icon">▧</span><div><strong>街境 <i>/</i> 光照实验室</strong><small>TILED WORLD · LIGHTING STUDY 01</small></div></div><div class="top-actions"><span class="live"><b></b> 本地实验</span><button id="perf-toggle" aria-expanded="true">CPU / GPU</button><button id="rt-toggle" aria-expanded="false">RT 缓冲</button><button id="panel-toggle" aria-label="显示或隐藏实验面板">实验设置 <span>⌘</span></button></div></header>
+<header class="topbar"><div class="brand"><span class="brand-icon">▧</span><div><strong>街境 <i>/</i> 光照实验室</strong><small>TILED WORLD · LIGHTING STUDY 01</small></div></div><div class="top-actions"><span class="live"><b></b> 本地实验</span><button id="perf-toggle" aria-expanded="true">CPU / GPU</button><button id="rt-toggle" aria-expanded="false">RT 缓冲</button><button id="sun-toggle" aria-controls="sun-controls">光照方向</button><button id="panel-toggle" aria-label="显示或隐藏实验面板">实验设置 <span>⌘</span></button></div></header>
 <aside id="perf-panel" aria-label="CPU GPU 耗时监测">
 <div class="panel-title"><span>CPU / GPU 耗时</span><span class="tag">滚动 120 样本</span></div>
 <p id="gpu-status" class="intro">正在检测 GPU timer query</p>
@@ -56,9 +56,10 @@
 <div class="control-row"><label for="facade-variation">建筑窗型变化</label><input id="facade-variation" type="checkbox" checked></div>
 <div class="control-row"><label for="facade-occlusion">洞口局部遮蔽（近似）</label><input id="facade-occlusion" type="checkbox" checked></div>
 <p class="intro">点“绿楼楼脚”观察普通楼边地面；切换 GI 转灰或仅间接漫反射作对照。完整光照中太阳会冲淡染色。冻结缓存时改色不会刷新补光。</p>
-<div class="section-label">02 <span>太阳与投影</span></div>
-<label class="slider-label">太阳方位 <output id="sun-value">145°</output></label><input id="sun" type="range" min="0" max="360" step="1" value="145">
-<label class="slider-label">太阳高度 <output id="elevation-value">42°</output></label><input id="elevation" type="range" min="10" max="80" step="1" value="42">
+<div id="sun-controls" class="section-label">02 <span>太阳 / 月亮方向与投影</span></div>
+<p class="intro">方位：0° 北、90° 东、180° 南、270° 西。夜景调整月光；冻结 GI 时，直接光立即变化，间接光需恢复更新。</p>
+<label for="sun" class="slider-label">光源方位 <output id="sun-value">145°</output></label><input id="sun" type="range" min="0" max="360" step="1" value="145">
+<label for="elevation" class="slider-label">光源高度 <output id="elevation-value">42°</output></label><input id="elevation" type="range" min="10" max="80" step="1" value="42">
 <div class="control-row"><label for="shadows">太阳阴影</label><input id="shadows" type="checkbox" checked></div>
 <div class="section-label">03 <span>环境光遮挡 AO</span></div>
 <div class="segmented" id="ao-mode"><button data-value="off">关闭</button><button data-value="on" class="active">开启 AO</button><button data-value="view">AO 灰度图</button></div>
@@ -87,6 +88,7 @@
 <nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="architecture">建筑细节</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
 <div class="compass" id="compass"><span>N</span><i>▲</i></div>
 <div class="stats"><span id="fps">-- FPS</span><span id="tile-stats">正在准备瓦片</span><span id="probe-stats">探针待更新</span><button id="reset">重置视角 ↺</button></div>
+<div class="touch-controls" aria-label="触屏操作"><button data-touch-mode="rotate" aria-pressed="true">旋转</button><button data-touch-mode="pan" aria-pressed="false">平移</button><span id="touch-hint">单指旋转 · 双指缩放 / 平移</span></div>
 <div class="gesture-hint">拖动旋转 · 右键平移 · 滚轮缩放 <span>W A S D 移动</span></div>
 <div id="cube-label" hidden>正在更新的探针 · HDR RGB / 六面预览</div>
 <div id="loading"><span class="loader"></span><strong>正在构建城市瓦片</strong><small>程序化 Mesh · 本地生成</small></div>
