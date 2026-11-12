@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-QKH9ivfi.js"></script>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f4ef"><link rel="icon" href="data:,"><title>街境 · 光照实验室 | Preview v3</title>  <script type="module" crossorigin src="./assets/index-DuIWokWS.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-Dz6RM-zb.css">
 </head>
 <body>
@@ -56,6 +56,7 @@
 <div class="control-row"><label for="facade-variation">建筑窗型变化</label><input id="facade-variation" type="checkbox" checked></div>
 <div class="control-row"><label for="facade-occlusion">洞口局部遮蔽（近似）</label><input id="facade-occlusion" type="checkbox" checked></div>
 <p class="intro">点“绿楼楼脚”观察普通楼边地面；切换 GI 转灰或仅间接漫反射作对照。完整光照中太阳会冲淡染色。冻结缓存时改色不会刷新补光。</p>
+<div class="section-label">反射 <span>周边场景</span></div><div class="control-row"><label for="glass-reflection">玻璃场景反射</label><input id="glass-reflection" type="checkbox" checked></div><div class="control-row"><label for="water-reflection">水面倒影</label><input id="water-reflection" type="checkbox" checked></div><div class="control-row"><label for="reflection-freeze">冻结反射（对照）</label><input id="reflection-freeze" type="checkbox"></div><p class="intro">玻璃共享附近场景，约每2秒分6面刷新，有视差误差；水面共享镜像相机，最多约7次/秒。只反射已加载物体，不递归反射，不含屏幕AO及雨雪粒子。</p><p id="reflection-status" class="intro">反射准备中</p>
 <div id="sun-controls" class="section-label">02 <span>太阳 / 月亮方向与投影</span></div>
 <p class="intro">方位：0° 北、90° 东、180° 南、270° 西。夜景调整月光；冻结 GI 时，直接光立即变化，间接光需恢复更新。</p>
 <label for="sun" class="slider-label">光源方位 <output id="sun-value">145°</output></label><input id="sun" type="range" min="0" max="360" step="1" value="145">
@@ -85,7 +86,7 @@
 <div id="rt-grid"></div>
 </aside>
 <section class="navigation"><div class="nav-heading"><span class="turn-icon">↗</span><div><small>下一段 · 滨河高架</small><strong id="nav-instruction">沿高架驶向海湾收费站</strong></div><span class="distance">1.2 <small>km</small></span></div><div class="route-progress"><i></i></div><div class="nav-footer"><span><b class="route-dot"></b> 城市环线 · 模拟路线</span><span id="drive-status">自由观察</span></div></section>
-<nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="architecture">建筑细节</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
+<nav class="presets" aria-label="观察位置"><button class="active" data-preset="overview">城市总览</button><button data-preset="water">湖畔倒影</button><button data-preset="river">河道倒影</button><button data-preset="architecture">建筑细节</button><button data-preset="bridge">高架路口</button><button data-preset="toll">收费站</button><button data-preset="bounce">染色试验</button><button data-preset="foot">绿楼楼脚</button><button data-preset="redfoot">红楼楼脚</button><button data-preset="aofoot">AO 楼脚</button><button data-preset="night">夜景街区</button><button id="drive">▷ 沿路漫游</button></nav>
 <div class="compass" id="compass"><span>N</span><i>▲</i></div>
 <div class="stats"><span id="fps">-- FPS</span><span id="tile-stats">正在准备瓦片</span><span id="probe-stats">探针待更新</span><button id="reset">重置视角 ↺</button></div>
 <div class="touch-controls" aria-label="触屏操作"><button data-touch-mode="rotate" aria-pressed="true">旋转</button><button data-touch-mode="pan" aria-pressed="false">平移</button><span id="touch-hint">单指旋转 · 双指缩放 / 平移</span></div>
