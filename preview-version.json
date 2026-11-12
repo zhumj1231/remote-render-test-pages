@@ -1,7 +1,7 @@
 {
-  "version": "wireframe-v1",
-  "source_commit": "f9d25209df4f00e14600e3cee68537ca087468cb",
-  "build_asset": "assets/index-CGv1XWaa.js",
-  "build_sha256": "57c361b080db18472c10cc3056bde096b31141f04099f83b072a275ee88d92d6",
-  "validation": "46 tests/build pass. SwiftShader wireframe toggle, streamed instances, exact pixel restoration, narrow viewport controls and WebGL error checks pass. Full regression stopped at 150s while awaiting initial GI convergence. Physical GPU/mobile performance unverified."
+  "version": "gesture-controls-v1",
+  "source_commit": "2ab0bbb92282e53acbeda5f88c739b01dc061d3e",
+  "build_asset": "assets/index-Dy4XV_hk.js",
+  "build_sha256": "91754812b0ff753a72de18f5cb2d136db77e93ae6bbb96776311093090099353",
+  "validation": "46 tests/build and 9 browser interaction checks pass: right button no capture/menu cancellation/camera change; left rotate/pan, Shift+left, middle pan, wheel, single-touch rotate/pan and pinch zoom. Tested with cloud Chromium/SwiftShader; actual gesture extension and physical mobile devices not tested. Rendering pipeline unchanged."
 }
