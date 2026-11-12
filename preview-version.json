@@ -1,7 +1,7 @@
 {
-  "version": "scene-reflections-v1",
-  "source_commit": "f1f8f4425d3aa992413fdd0e1ec431b6bad3b442",
-  "build_asset": "assets/index-DuIWokWS.js",
-  "build_sha256": "10c928702874fadadd1e3d6b27c495e626725e51e47625325e23ee6f7bf5bba7",
-  "validation": "45 tests/build and dynamic-object, cache, state restoration, rebase and city day/night reflection checks pass using SwiftShader. Full GI convergence timed out at 120 seconds. Shared-cube parallax, low-resolution/rate-limited water and physical GPU/mobile performance remain unverified limitations."
+  "version": "wireframe-v1",
+  "source_commit": "f9d25209df4f00e14600e3cee68537ca087468cb",
+  "build_asset": "assets/index-CGv1XWaa.js",
+  "build_sha256": "57c361b080db18472c10cc3056bde096b31141f04099f83b072a275ee88d92d6",
+  "validation": "46 tests/build pass. SwiftShader wireframe toggle, streamed instances, exact pixel restoration, narrow viewport controls and WebGL error checks pass. Full regression stopped at 150s while awaiting initial GI convergence. Physical GPU/mobile performance unverified."
 }
